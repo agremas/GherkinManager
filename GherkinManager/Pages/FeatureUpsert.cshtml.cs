@@ -55,7 +55,7 @@ namespace GherkinManager.Pages
             {
                 if (Feature.Id == 0)
                 {
-                    Feature.ProjectId = (int)HttpContext.Session.GetInt32("ProjectId");
+                    Feature.ProjectId = ProjectId;
                     _dataBase.Feature.Add(Feature);
                 }
                 else
@@ -70,6 +70,5 @@ namespace GherkinManager.Pages
 
             return RedirectToPage();
         }
-
     }
 }

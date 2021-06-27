@@ -15,10 +15,8 @@ namespace GherkinManager.Pages
             _dataBase = dataBase;
         }
 
-        public IEnumerable<Model.Project> Projects { get; set; }
-        public IEnumerable<Model.Feature> Features { get; set; }
-
-        public int CountFeatures(int projectId) => Features.Where(x => x.ProjectId == projectId).Count();
+        public IEnumerable<Project> Projects { get; set; }
+        public IEnumerable<Feature> Features { get; set; }
 
         public async Task OnGet()
         {

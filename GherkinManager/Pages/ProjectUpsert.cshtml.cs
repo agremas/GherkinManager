@@ -68,7 +68,6 @@ namespace GherkinManager.Pages
             return RedirectToPage();
         }
 
-
         public async Task<IActionResult> OnPostDelete(int id)
         {
             var feature = await _dataBase.Feature.FindAsync(id);
@@ -80,7 +79,6 @@ namespace GherkinManager.Pages
             await _dataBase.SaveChangesAsync();
 
             return RedirectToPage("ProjectUpsert", new { id = feature.ProjectId });
-
         }
     }
 }

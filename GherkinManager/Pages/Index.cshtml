@@ -1,0 +1,67 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Gherkin manager";
+}
+
+<br />
+<div class="container row p-0 m-0">
+    <div class="col-12">
+        <h1 class="text-info">Gherkin Manager</h1>
+    </div>
+
+    <br />
+
+    <div class="col-3">
+        <a asp-page="ProjectUpsert" class="btn btn-info form-control text-white">Create new project</a>
+    </div>
+
+    <br />
+    <br />
+
+    <div class="col-12 p-3">
+        <form method="post">
+            @if (Model.Projects.Count() > 0)
+            {
+                foreach (var project in Model.Projects)
+                {
+                    <div class="card" style="width:30%">
+                        <div class="card-body">
+                            <h5>@Html.DisplayFor(m => project.Name)</h5>
+                            <table class="table-borderless">
+                                <tr>
+                                    <td>
+                                        <label>IsActive</label>
+                                    </td>
+                                    <td>
+                                        @{ bool isActiveProject =
+                                                   (project.StartDate <= DateTime.Now && project.EndDate > DateTime.Now);
+                                        }
+                                        @Html.CheckBoxFor(m => isActiveProject, new { @disabled = "disabled" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Number of feature files</label>
+                                    </td>
+                                    <td>
+                                        @{ int countFeatures = Model.Features.Where(x => x.ProjectId == project.Id).Count();}
+                                        @Html.DisplayFor(m => countFeatures)
+                                    </td>
+                                </tr>
+                            </table>
+                            <a asp-page="ProjectUpsert" asp-route-id="@project.Id" class="btn btn-success btn-sm text-white">Open project</a>
+                        </div>
+
+                    </div>
+
+                }
+            }
+            else
+            {
+                <p3>No projects available.</p3>
+            }
+        </form>
+    </div>
+
+</div>

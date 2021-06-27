@@ -18,5 +18,10 @@ namespace GherkinManager.Model
 
         public DateTime EndDate { get; set; }
 
+        public Project()
+        {
+            StartDate = DateTime.Today;
+            EndDate = new DateTime(2051, 12, 31);
+        }
     }
 }

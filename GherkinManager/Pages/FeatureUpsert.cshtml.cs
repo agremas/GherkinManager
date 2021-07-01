@@ -10,10 +10,12 @@ namespace GherkinManager.Pages
     public class FeatureUpsertModel : PageModel
     {
         private ApplicationDbContext _dataBase;
+        private GherkinClient _client;
 
-        public FeatureUpsertModel(ApplicationDbContext dataBase)
+        public FeatureUpsertModel(ApplicationDbContext dataBase, GherkinClient client)
         {
             _dataBase = dataBase;
+            _client = client;
         }
 
         public int ProjectId
@@ -32,8 +34,10 @@ namespace GherkinManager.Pages
             Feature = new Feature();
             HttpContext.Session.SetInt32("ProjectId", projectId);
 
+
             if (id == null)
             {
+                Feature.Content = await _client.GetSampleFeature();
                 // create
                 return Page();
             }
@@ -53,19 +57,29 @@ namespace GherkinManager.Pages
         {
             if (ModelState.IsValid)
             {
-                if (Feature.Id == 0)
+                var validationResult = await _client.ValidateFeature(Feature.Content);
+                if (validationResult)
                 {
-                    Feature.ProjectId = ProjectId;
-                    _dataBase.Feature.Add(Feature);
+                    if (Feature.Id == 0)
+                    {
+                        Feature.ProjectId = ProjectId;
+                        _dataBase.Feature.Add(Feature);
+                    }
+                    else
+                    {
+                        _dataBase.Feature.Update(Feature);
+                    }
+
+                    await _dataBase.SaveChangesAsync();
+
+                    return RedirectToPage("ProjectUpsert", new { id = Feature.ProjectId });
                 }
                 else
                 {
-                    _dataBase.Feature.Update(Feature);
+                    ModelState.AddModelError("Feature.Content", "Validation error");
+                    return Page();
                 }
-
-                await _dataBase.SaveChangesAsync();
-
-                return RedirectToPage("ProjectUpsert", new { id = Feature.ProjectId });
+                
             }
 
             return RedirectToPage();

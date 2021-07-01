@@ -1,16 +1,11 @@
 using GherkinManager.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GherkinManager
 {
@@ -29,11 +24,14 @@ namespace GherkinManager
             services.AddRazorPages();
 
             services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddControllersWithViews(); // API calls
-
             // Session
             services.AddDistributedMemoryCache();
             services.AddSession();
+            services.AddHttpClient<GherkinClient>(c =>
+            {
+                c.BaseAddress = new Uri(Configuration.GetConnectionString("BaseApiURL"));
+                c.DefaultRequestHeaders.Clear();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +61,6 @@ namespace GherkinManager
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
         }

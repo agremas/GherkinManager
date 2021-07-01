@@ -14,6 +14,7 @@ namespace GherkinManager.Model
         public string Owner { get; set; }
 
         [Required]
+        [DataType(DataType.MultilineText)]
         public string Content { get; set; }
 
         [Required]
